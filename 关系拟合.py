@@ -18,7 +18,7 @@ class Net(torch.nn.Module):
 
 def print_hi(name):
     # 创建保存图片的目录
-    target_directory = "/Users/you/Desktop/001"
+    target_directory = "/Users/your/Desktop/001"
     if not os.path.exists(target_directory):
         os.makedirs(target_directory)
     # 创建数据集
@@ -47,14 +47,15 @@ def print_hi(name):
         if epoch % 5 == 0:  # 每 5 个周期更新一次图像
             plt.cla()  # 清除当前图像内容
             plt.scatter(x.data.numpy(), y.data.numpy(), label='True Data')
-            plt.plot(x.data.numpy(), prediction.data.numpy(), 'r-', lw=1, label='Prediction')
+            plt.plot(x.data.numpy(), prediction.data.numpy(), 'r-', lw=2, label='Prediction')
             plt.text(0.5, 0, f'Loss={loss.item():.4f}', fontdict={'size': 20, 'color': 'red'})
             plt.legend()  # 添加图例
-            plt.pause(0.1)  # 暂停以更新图像
+
             # 保存当前图像
             file_path = os.path.join(target_directory, f'epoch_{epoch}.png')
             plt.savefig(file_path)
             print(f"图像已保存: {file_path}")
+            plt.pause(0.1)  # 暂停以更新图像
 
     plt.ioff()  # 关闭交互模式
     plt.show()  # 显示最终图像
