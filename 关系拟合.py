@@ -17,6 +17,7 @@ class Net(torch.nn.Module):
 
 
 def print_hi(name):
+    print(f'Hi, {name}')
     # 创建保存图片的目录
     # target_directory = "/Users/your/Desktop/001"
     # if not os.path.exists(target_directory):
