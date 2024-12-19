@@ -18,9 +18,9 @@ class Net(torch.nn.Module):
 
 def print_hi(name):
     # 创建保存图片的目录
-    target_directory = "/Users/your/Desktop/001"
-    if not os.path.exists(target_directory):
-        os.makedirs(target_directory)
+    # target_directory = "/Users/your/Desktop/001"
+    # if not os.path.exists(target_directory):
+    #     os.makedirs(target_directory)
     # 创建数据集
     # 生成一维的线性空间数据，并增加一维使其形状为 (100, 1)
     x = torch.unsqueeze(torch.linspace(-1, 1, 100), dim=1)
@@ -52,9 +52,9 @@ def print_hi(name):
             plt.legend()  # 添加图例
 
             # 保存当前图像
-            file_path = os.path.join(target_directory, f'epoch_{epoch}.png')
-            plt.savefig(file_path)
-            print(f"图像已保存: {file_path}")
+            # file_path = os.path.join(target_directory, f'epoch_{epoch}.png')
+            # plt.savefig(file_path)
+            # print(f"图像已保存: {file_path}")
             plt.pause(0.1)  # 暂停以更新图像
 
     plt.ioff()  # 关闭交互模式
