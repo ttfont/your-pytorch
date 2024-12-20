@@ -1,10 +1,5 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import torch
 import matplotlib.pyplot as plt
-import torch
 import torch.nn.functional as F  # 激励函数都在这
 
 
@@ -21,65 +16,72 @@ class Net(torch.nn.Module):  # 继承 torch 的 Module
         return x
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-    # 假数据
+def generate_data():
+    """生成模拟数据"""
     n_data = torch.ones(100, 2)  # 数据的基本形态
-    x0 = torch.normal(2 * n_data, 1)  # 类型0 x data (tensor), shape=(100, 2)
-    y0 = torch.zeros(100)  # 类型0 y data (tensor), shape=(100, )
-    x1 = torch.normal(-2 * n_data, 1)  # 类型1 x data (tensor), shape=(100, 1)
-    y1 = torch.ones(100)  # 类型1 y data (tensor), shape=(100, )
+    x0 = torch.normal(2 * n_data, 1)  # 类型0 x data
+    y0 = torch.zeros(100)  # 类型0 y data
+    x1 = torch.normal(-2 * n_data, 1)  # 类型1 x data
+    y1 = torch.ones(100)  # 类型1 y data
 
-    # 注意 x, y 数据的数据形式是一定要像下面一样 (torch.cat 是在合并数据)
-    x = torch.cat((x0, x1), 0).type(torch.FloatTensor)  # FloatTensor = 32-bit floating
-    y = torch.cat((y0, y1), ).type(torch.LongTensor)  # LongTensor = 64-bit integer
+    # 合并数据
+    x = torch.cat((x0, x1), 0).type(torch.FloatTensor)
+    y = torch.cat((y0, y1), ).type(torch.LongTensor)
 
-    plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=y.data.numpy(), s=100, lw=0, cmap='RdYlGn')
+    return x, y
 
-    plt.show()
 
-    # 画图
-    # plt.scatter(x.data.numpy(), y.data.numpy())
-    # plt.show()
-
-    net = Net(n_feature=2, n_hidden=10, n_output=2)  # 几个类别就几个 output
-
-    print(net)  # net 的结构
-    # optimizer 是训练的工具
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.02)  # 传入 net 的所有参数, 学习率
-    # 算误差的时候, 注意真实值!不是! one-hot 形式的, 而是1D Tensor, (batch,)
-    # 但是预测值是2D tensor (batch, n_classes)
-    loss_func = torch.nn.CrossEntropyLoss()
-    plt.ion()  # 画图
-
+def train_model(net, x, y, optimizer, loss_func):
+    """训练模型并绘制结果"""
+    plt.ion()  # 打开交互模式绘图
     for t in range(100):
         out = net(x)  # 喂给 net 训练数据 x, 输出分析值
 
-        loss = loss_func(out, y)  # 计算两者的误差
-
+        loss = loss_func(out, y)  # 计算误差
         optimizer.zero_grad()  # 清空上一步的残余更新参数值
-        loss.backward()  # 误差反向传播, 计算参数更新值
-        optimizer.step()  # 将参数更新值施加到 net 的 parameters 上
+        loss.backward()  # 误差反向传播，计算参数更新值
+        optimizer.step()  # 更新模型参数
 
-        # 接着上面来
+        # 每隔 2 次训练迭代绘制一次图
         if t % 2 == 0:
             plt.cla()
-            # 过了一道 softmax 的激励函数后的最大概率才是预测值
-            prediction = torch.max(F.softmax(out), 1)[1]
+            prediction = torch.max(F.softmax(out), 1)[1]  # 获取预测类别
             pred_y = prediction.data.numpy().squeeze()
             target_y = y.data.numpy()
+
             plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=pred_y, s=100, lw=0, cmap='RdYlGn')
-            accuracy = sum(pred_y == target_y) / 200.  # 预测中有多少和真实值一样
-            plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy, fontdict={'size': 20, 'color': 'red'})
+            accuracy = sum(pred_y == target_y) / 200.  # 计算准确度
+            plt.text(1.5, -4, f'Accuracy={accuracy:.2f}', fontdict={'size': 20, 'color': 'red'})
             plt.pause(0.1)
 
-    plt.ioff()  # 停止画图
+    plt.ioff()  # 关闭交互模式绘图
     plt.show()
 
 
-# Press the green button in the gutter to run the script.
+def print_hi(name):
+    """打印欢迎信息并展示数据"""
+    print(f'Hi, {name}')
+
+    # 生成数据
+    x, y = generate_data()
+
+    # 可视化数据分布
+    plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=y.data.numpy(), s=100, lw=0, cmap='RdYlGn')
+    plt.show()
+
+    # 初始化神经网络模型
+    net = Net(n_feature=2, n_hidden=10, n_output=2)
+
+    print(net)  # 输出网络结构
+
+    # 初始化优化器和损失函数
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.02)  # 使用 SGD 优化器
+    loss_func = torch.nn.CrossEntropyLoss()  # 使用交叉熵损失函数
+
+    # 开始训练
+    train_model(net, x, y, optimizer, loss_func)
+
+
+# 主函数
 if __name__ == '__main__':
     print_hi('区分类型-分类')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
