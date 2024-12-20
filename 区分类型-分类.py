@@ -45,7 +45,7 @@ def train_model(net, x, y, optimizer, loss_func):
         # 每隔 2 次训练迭代绘制一次图
         if t % 2 == 0:
             plt.cla()
-            prediction = torch.max(F.softmax(out), 1)[1]  # 获取预测类别
+            prediction = torch.max(F.softmax(out, dim=1), 1)[1]  # 获取预测类别
             pred_y = prediction.data.numpy().squeeze()
             target_y = y.data.numpy()
 
