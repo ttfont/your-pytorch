@@ -21,6 +21,7 @@ def generate_data():
     n_data = torch.ones(100, 2)  # 数据的基本形态
     x0 = torch.normal(2 * n_data, 1)  # 类型0 x data
     y0 = torch.zeros(100)  # 类型0 y data
+
     x1 = torch.normal(-2 * n_data, 1)  # 类型1 x data
     y1 = torch.ones(100)  # 类型1 y data
 
@@ -46,11 +47,16 @@ def train_model(net, x, y, optimizer, loss_func):
         if t % 2 == 0:
             plt.cla()
             prediction = torch.max(F.softmax(out, dim=1), 1)[1]  # 获取预测类别
+            # print("prediction = ", prediction)
             pred_y = prediction.data.numpy().squeeze()
+            # print("pred_y = ", pred_y)
             target_y = y.data.numpy()
+            # print("target_y = ", target_y)
 
             plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=pred_y, s=100, lw=0, cmap='RdYlGn')
             accuracy = sum(pred_y == target_y) / 200.  # 计算准确度
+
+            # print("sum() = ", sum(pred_y == target_y))
             plt.text(1.5, -4, f'Accuracy={accuracy:.2f}', fontdict={'size': 20, 'color': 'red'})
             plt.pause(0.1)
 
@@ -65,10 +71,10 @@ def print_hi(name):
     # 生成数据
     x, y = generate_data()
 
-    # 可视化数据分布
+    # # 可视化数据分布
     plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=y.data.numpy(), s=100, lw=0, cmap='RdYlGn')
     plt.show()
-
+    #
     # 初始化神经网络模型
     net = Net(n_feature=2, n_hidden=10, n_output=2)
 
